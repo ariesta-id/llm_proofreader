@@ -34,9 +34,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const copyBtn = document.getElementById('copy-btn');
     const copyBtnText = document.getElementById('copy-btn-text');
     const toast = document.getElementById('toast');
+    const langBtns = document.querySelectorAll('.lang-btn');
 
     // State Variables
     let proofreadResult = null;
+    let selectedLanguage = 'en-US';
+
+    // Language Selection Logic
+    langBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            langBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedLanguage = btn.getAttribute('data-lang');
+        });
+    });
 
     /* ==========================================================================
        Character Counter
@@ -159,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ text })
+                body: JSON.stringify({ text, language: selectedLanguage })
             });
 
             if (!response.ok) {

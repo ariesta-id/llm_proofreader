@@ -36,6 +36,7 @@ app = FastAPI(title="GPT-5 Structured Proofreader API")
 # Request model for text input
 class ProofreadRequest(BaseModel):
     text: str
+    language: str = "en-US"
 
 @app.post("/api/proofread")
 async def api_proofread(payload: ProofreadRequest):
@@ -48,7 +49,7 @@ async def api_proofread(payload: ProofreadRequest):
 
     try:
         # Run the existing structured proofreading function
-        result = proofread_text(text)
+        result = proofread_text(text, language=payload.language)
         return result
     except ValueError as val_err:
         raise HTTPException(status_code=400, detail=str(val_err))

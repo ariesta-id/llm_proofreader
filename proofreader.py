@@ -27,6 +27,7 @@ load_dotenv()
 
 def proofread_text(
     text: str,
+    language: str = "en-US",
     api_token: Optional[str] = None,
     max_retries: int = 3,
     poll_interval: float = 3.0
@@ -36,6 +37,7 @@ def proofread_text(
 
     Parameters:
         text (str): The text to proofread.
+        language (str): The language dialect to use ('en-US' or 'en-GB').
         api_token (str, optional): The Replicate API token. If not provided,
                                    retrieved from the REPLICATE_API_TOKEN env var.
         max_retries (int): Number of retries on API request failures.
@@ -53,7 +55,7 @@ def proofread_text(
         )
 
     # 1. Build Payload
-    prompt = get_proofread_prompt(text)
+    prompt = get_proofread_prompt(text, language)
 
     payload = {
         "input": {

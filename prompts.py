@@ -98,6 +98,7 @@ PROOFREAD_SCHEMA = {
 PROOFREAD_PROMPT_TEMPLATE = (
     "You are a meticulous, professional proofreader. Your primary objective is to review "
     "the text thoroughly and identify grammatical errors, spelling mistakes, and typos.\n\n"
+    "{language_instruction}\n\n"
     "Follow these strict instructions to perform the proofreading in two distinct steps:\n\n"
     "1. FIRST PASS: GRAMMAR & TYPOS (No Style Rewriting)\n"
     "   - Scan the text repeatedly and thoroughly for spelling, grammar, and punctuation errors.\n"
@@ -120,9 +121,22 @@ PROOFREAD_PROMPT_TEMPLATE = (
     "Text to proofread:\n{text}"
 )
 
-def get_proofread_prompt(text: str) -> str:
+def get_proofread_prompt(text: str, language: str = "en-US") -> str:
     """
     Generates the proofread prompt for a given text input.
     """
-    return PROOFREAD_PROMPT_TEMPLATE.format(text=text)
+    if language == "en-GB":
+        lang_instruction = (
+            "CRITICAL: The target dialect for this proofreading is British English (UK). "
+            "Ensure that all spelling (e.g., 'colour' instead of 'color', 'organise' instead of 'organize', "
+            "'centre' instead of 'center'), vocabulary, and punctuation choices strictly adhere to British English standards."
+        )
+    else:
+        lang_instruction = (
+            "CRITICAL: The target dialect for this proofreading is American English (US). "
+            "Ensure that all spelling (e.g., 'color' instead of 'colour', 'organize' instead of 'organise', "
+            "'center' instead of 'centre'), vocabulary, and punctuation choices strictly adhere to American English standards."
+        )
+    return PROOFREAD_PROMPT_TEMPLATE.format(language_instruction=lang_instruction, text=text)
+
 

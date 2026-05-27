@@ -21,7 +21,13 @@
             <section class="panel input-panel glass">
                 <div class="panel-header">
                     <h2><i data-lucide="file-text"></i> Original Text</h2>
-                    <span class="badge">Draft</span>
+                    <div class="header-actions" style="display: flex; align-items: center; gap: 10px;">
+                        <div class="lang-selector" id="lang-selector">
+                            <button class="lang-btn active" data-lang="en-US" title="American English">US</button>
+                            <button class="lang-btn" data-lang="en-GB" title="British English">UK</button>
+                        </div>
+                        <span class="badge">Draft</span>
+                    </div>
                 </div>
                 <div class="panel-body">
                     <textarea id="text-input" placeholder="Type or paste your text here to proofread... (e.g. 'Their is many reasons to love programming. It allow you to build cool things...')"></textarea>
