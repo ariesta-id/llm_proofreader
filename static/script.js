@@ -13,6 +13,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsPanel = document.getElementById('results-panel');
     const resultsContent = document.getElementById('results-content');
     const emptyState = document.getElementById('empty-state');
+
+    const suggestionsPanel = document.getElementById('suggestions-panel');
+    const suggestionsContent = document.getElementById('suggestions-content');
+    const suggestionsEmptyState = document.getElementById('suggestions-empty-state');
+    const suggestionsList = document.getElementById('suggestions-list');
     
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -183,10 +188,17 @@ document.addEventListener('DOMContentLoaded', () => {
        DOM Rendering
        ========================================================================== */
     function renderResults(result) {
-        // Remove empty state and reveal results content
+        // Remove empty state and reveal results content (Middle Pane)
         resultsPanel.classList.remove('empty');
         emptyState.classList.add('hidden');
         resultsContent.classList.remove('hidden');
+
+        // Remove empty state and reveal suggestions content (Right Pane)
+        if (suggestionsPanel) {
+            suggestionsPanel.classList.remove('empty');
+            if (suggestionsEmptyState) suggestionsEmptyState.classList.add('hidden');
+            if (suggestionsContent) suggestionsContent.classList.remove('hidden');
+        }
 
         // Set Polished Output
         const diffHtml = generatePolishedDiff(result.original_text, result.corrected_text);
@@ -210,8 +222,8 @@ document.addEventListener('DOMContentLoaded', () => {
             correctionsList.innerHTML = `
                 <div class="empty-state">
                     <i data-lucide="check-circle" style="color: var(--cat-other); width: 48px; height: 48px;"></i>
-                    <h3>Perfect writing!</h3>
-                    <p>No grammar or spelling improvements were needed.</p>
+                    <h3>Perfect grammar!</h3>
+                    <p>No spelling, grammar, or punctuation errors were found.</p>
                 </div>
             `;
         } else {
@@ -237,11 +249,57 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Set Feedback Tab
-        feedbackText.textContent = result.overall_feedback;
+        // Set Feedback Text (in the Right Pane feedback card)
+        if (feedbackText) {
+            feedbackText.textContent = result.overall_feedback || "No high-level feedback available.";
+        }
 
-        // Reset active tab to 'polished'
-        document.querySelector('[data-tab="polished"]').click();
+        // Generate Stylistic Suggestions List
+        if (suggestionsList) {
+            suggestionsList.innerHTML = '';
+            if (!result.stylistic_suggestions || result.stylistic_suggestions.length === 0) {
+                suggestionsList.innerHTML = `
+                    <div class="empty-state" style="padding: 20px 0;">
+                        <i data-lucide="check" style="color: var(--cat-other); width: 36px; height: 36px;"></i>
+                        <h4 style="font-size: 15px; margin-top: 8px;">Premium Voice & Flow</h4>
+                        <p style="font-size: 12px; max-width: 220px; color: var(--text-muted);">The writing style is perfectly clean and natural. No rewrites needed.</p>
+                    </div>
+                `;
+            } else {
+                result.stylistic_suggestions.forEach((sugg, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'suggestion-card';
+                    card.innerHTML = `
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <span class="category-tag" style="color: var(--cat-style); background: var(--cat-style-bg); padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Suggestion #${index + 1}</span>
+                        </div>
+                        <div class="diff-view" style="display: flex; flex-direction: column; align-items: stretch; gap: 8px;">
+                            <div style="font-size: 13px; color: var(--text-dark); text-decoration: line-through; background: rgba(255, 255, 255, 0.03); padding: 6px 10px; border-radius: 6px;">
+                                <strong>Original:</strong> "${escapeHtml(sugg.original_sentence)}"
+                            </div>
+                            <div style="font-size: 14px; color: #a7f3d0; font-weight: 550; background: rgba(16, 185, 129, 0.15); padding: 8px 12px; border-radius: 6px; border-left: 3px solid var(--cat-other);">
+                                <strong>Suggested:</strong> "${escapeHtml(sugg.suggested_rewrite)}"
+                            </div>
+                        </div>
+                        <div class="card-explanation" style="margin-top: 10px; font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+                            <div style="margin-bottom: 6px;">
+                                <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--primary-hover); letter-spacing: 0.5px; display: block; margin-bottom: 2px;">Assumed Intent:</span>
+                                "${escapeHtml(sugg.assumption)}"
+                            </div>
+                            <div>
+                                <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; display: block; margin-bottom: 2px;">Rationale:</span>
+                                "${escapeHtml(sugg.explanation)}"
+                            </div>
+                        </div>
+                    `;
+                    suggestionsList.appendChild(card);
+                });
+            }
+        }
+
+        // Reset active tab in Middle Pane to 'polished'
+        const polishedTabBtn = document.querySelector('[data-tab="polished"]');
+        if (polishedTabBtn) polishedTabBtn.click();
 
         // Refresh Lucide Icons inside dynamic elements
         lucide.createIcons();

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Proofreader | Premium GPT-5 Assistant</title>
+    <title>Proofreader</title>
     <!-- Google Fonts: Outfit & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,7 +38,7 @@
                 </div>
             </section>
 
-            <!-- Results Area -->
+            <!-- Results Area (Middle Pane) -->
             <section class="panel results-panel glass empty" id="results-panel">
                 <!-- Empty State -->
                 <div class="empty-state" id="empty-state">
@@ -46,7 +46,7 @@
                         <i data-lucide="sparkles" class="empty-icon"></i>
                     </div>
                     <h3>Waiting for Input</h3>
-                    <p>Enter your text on the left and click "Proofread Text" to get detailed AI analysis.</p>
+                    <p>Enter your text on the left and click "Proofread Text" to get detailed LLM analysis.</p>
                 </div>
 
                 <!-- Main Content (Hidden initially) -->
@@ -61,7 +61,7 @@
                                 <span class="badge count-badge" id="corrections-count">0</span>
                             </button>
                             <button class="tab-btn" data-tab="feedback">
-                                <i data-lucide="message-square-text"></i> AI Feedback
+                                <i data-lucide="message-square-text"></i> LLM Feedback
                             </button>
                         </div>
                     </div>
@@ -94,6 +94,32 @@
                                     <p id="feedback-text"></p>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stylistic Suggestions Area (Right Pane) -->
+            <section class="panel suggestions-panel glass empty" id="suggestions-panel">
+                <!-- Empty State -->
+                <div class="empty-state" id="suggestions-empty-state">
+                    <div class="pulse-container">
+                        <i data-lucide="wand-2" class="empty-icon"></i>
+                    </div>
+                    <h3>Stylistic Suggestions</h3>
+                    <p>LLM-powered suggestions to improve flow, voice, and clarity will appear here.</p>
+                </div>
+
+                <!-- Main Content (Hidden initially) -->
+                <div class="suggestions-content hidden" id="suggestions-content">
+                    <div class="panel-header">
+                        <h2><i data-lucide="sparkles"></i> Stylistic Rewrites</h2>
+                        <span class="badge" style="color: var(--cat-style); background: var(--cat-style-bg);">Suggestions</span>
+                    </div>
+                    <div class="panel-body">
+                        <!-- List of stylistic cards -->
+                        <div class="suggestions-list" id="suggestions-list">
+                            <!-- Populated dynamically -->
                         </div>
                     </div>
                 </div>

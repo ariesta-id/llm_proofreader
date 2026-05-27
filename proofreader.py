@@ -177,6 +177,18 @@ def main():
         print("OVERALL FEEDBACK:")
         print("=" * 60)
         print(result["overall_feedback"])
+        print()
+
+        print("=" * 60)
+        print("STYLISTIC REWRITING SUGGESTIONS:")
+        print("=" * 60)
+        for i, sugg in enumerate(result.get("stylistic_suggestions", []), 1):
+            print(f"Suggestion #{i}:")
+            print(f"  [Original]   : \"{sugg['original_sentence']}\"")
+            print(f"  [Suggested]  : \"{sugg['suggested_rewrite']}\"")
+            print(f"  [Assumption] : \"{sugg['assumption']}\"")
+            print(f"  [Reason]     : \"{sugg['explanation']}\"")
+            print()
         print("=" * 60)
 
     except Exception as e:

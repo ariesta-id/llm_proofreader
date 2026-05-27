@@ -78,7 +78,7 @@ body {
 .app-container {
     display: block;
     width: 100%;
-    max-width: 1400px;
+    max-width: 1680px;
     height: calc(100vh - 48px);
     margin: 24px;
     padding: 0 12px;
@@ -220,8 +220,8 @@ body {
    ========================================================================== */
 .workspace {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
+    grid-template-columns: 1fr 1.15fr 1.15fr;
+    gap: 20px;
     height: 100%;
 }
 
@@ -391,7 +391,8 @@ textarea::placeholder {
 /* ==========================================================================
    Results Panel (Empty State)
    ========================================================================== */
-.results-panel {
+.results-panel,
+.suggestions-panel {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -457,6 +458,14 @@ textarea::placeholder {
 }
 
 .results-panel:not(.empty) .empty-state {
+    display: none;
+}
+
+.suggestions-panel.empty .suggestions-content {
+    display: none;
+}
+
+.suggestions-panel:not(.empty) #suggestions-empty-state {
     display: none;
 }
 
@@ -743,6 +752,38 @@ textarea::placeholder {
 .toast-icon {
     width: 18px;
     height: 18px;
+}
+
+/* Suggestions Panel Layout & Cards */
+.suggestions-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.suggestions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.suggestion-card {
+    border-radius: var(--radius-md);
+    padding: 18px;
+    border-left: 4px solid var(--cat-style);
+    background: linear-gradient(90deg, var(--cat-style-bg) 0%, rgba(0,0,0,0) 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    border-right: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    transition: var(--transition);
+}
+
+.suggestion-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateX(2px);
 }
 
 /* ==========================================================================

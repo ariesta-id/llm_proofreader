@@ -55,15 +55,40 @@ PROOFREAD_SCHEMA = {
                 },
                 "overall_feedback": {
                     "type": "string",
+                    "description": "General summary and feedback on the writing quality, tone, and readability (no stylistic suggestions here)."
+                },
+                "stylistic_suggestions": {
+                    "type": "array",
                     "description": (
-                        "General summary and feedback on the writing. This must start with a section summarizing "
-                        "the writing quality and tone, followed by a separate, clearly demarcated section titled "
-                        "'Stylistic Rewriting Recommendations' proposing optional suggestions for sentences that "
-                        "could flow better, including stated assumptions about the writer's intent."
-                    )
+                        "Optional stylistic rewriting recommendations for sentences that could flow better or sound "
+                        "more natural, while following the writer's existing style and not changing the meaning."
+                    ),
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "original_sentence": {
+                                "type": "string",
+                                "description": "The original sentence that can be improved."
+                            },
+                            "suggested_rewrite": {
+                                "type": "string",
+                                "description": "The proposed rewritten sentence matching the author's voice but flowing better."
+                            },
+                            "assumption": {
+                                "type": "string",
+                                "description": "The assumption made about the writer's original meaning or intent."
+                            },
+                            "explanation": {
+                                "type": "string",
+                                "description": "Why this suggestion improves flow or readability."
+                            }
+                        },
+                        "required": ["original_sentence", "suggested_rewrite", "assumption", "explanation"],
+                        "additionalProperties": False
+                    }
                 }
             },
-            "required": ["original_text", "corrected_text", "corrections", "overall_feedback"],
+            "required": ["original_text", "corrected_text", "corrections", "overall_feedback", "stylistic_suggestions"],
             "additionalProperties": False
         }
     }
@@ -90,9 +115,8 @@ PROOFREAD_PROMPT_TEMPLATE = (
     "- 'corrected_text': The final text incorporating ONLY the spelling, grammar, and punctuation corrections from the First Pass. "
     "No stylistic rewrites should be applied here.\n"
     "- 'corrections': The detailed array of corrections made in the First Pass.\n"
-    "- 'overall_feedback': Provide your feedback here. Start with a brief, objective summary of the grammatical issues, "
-    "followed by a dedicated, clearly labelled 'Stylistic Rewriting Recommendations' section that lists your suggestions, "
-    "re-written sentences, and stated assumptions.\n\n"
+    "- 'overall_feedback': Provide your high-level feedback summary here regarding writing quality, tone, and grammar.\n"
+    "- 'stylistic_suggestions': The structured array of your recommended sentence rewrites, assumptions, and explanations from the Second Pass.\n\n"
     "Text to proofread:\n{text}"
 )
 
