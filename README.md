@@ -12,7 +12,6 @@ Vibe-coded with Antigravity 2.0 and Gemini-3.5-Flash (Medium)
 - **Detailed Corrections:** Every suggestion includes the original phrase, the corrected phrase, the classification (grammar, spelling, punctuation, etc.), and the logical explanation.
 - **Stylistic Rewrites:** Offers alternative phrasings based on context assumptions to improve the flow, tone, and voice.
 - **Explainable LLM Feedback:** Diagnostic feedback summarizing the overall quality and focal points of the text.
-- **Start Menu Shortcut (Windows 11):** Launch the server in WSL2 and open the browser interface with a single click.
 
 ---
 
@@ -72,15 +71,3 @@ Run a diagnostic proofreading evaluation of sample text directly in the console:
 uv run proofreader.py
 ```
 
----
-
-## Windows 11 Start Menu Shortcut
-
-A native Start Menu shortcut (`Proofreader`) is provided for Windows users. 
-
-### What it does:
-1. Launches your default web browser directly to **`http://127.0.0.1:8000`**.
-2. Starts the WSL2 background server automatically using `uv run app.py`.
-3. Keeps the console logs visible in the background so you can monitor API traffic or stop the server cleanly via `Ctrl + C`.
-
-To launch the utility in the future, simply press the **Windows key**, type **"Proofreader"**, and hit **Enter**.
