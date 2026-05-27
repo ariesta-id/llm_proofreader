@@ -48,6 +48,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Add Ctrl+Enter shortcut to submit text
+    textInput.addEventListener('keydown', (event) => {
+        if (event.ctrlKey && event.key === 'Enter') {
+            event.preventDefault();
+            proofreadBtn.click();
+        }
+    });
+
     /* ==========================================================================
        Tab Switching Logic
        ========================================================================== */
