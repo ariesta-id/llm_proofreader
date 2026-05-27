@@ -39,12 +39,12 @@ document.addEventListener('DOMContentLoaded', () => {
     textInput.addEventListener('input', () => {
         const length = textInput.value.length;
         charCount.textContent = length;
-        metricChars.textContent = length;
+        if (metricChars) metricChars.textContent = length;
         
         if (length > 2000) {
             textInput.value = textInput.value.substring(0, 2000);
             charCount.textContent = 2000;
-            metricChars.textContent = 2000;
+            if (metricChars) metricChars.textContent = 2000;
         }
     });
 
@@ -72,29 +72,56 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ==========================================================================
        Highlight Diff Rendering Logic
        ========================================================================== */
-    function generatePolishedDiff(original, corrected, corrections) {
-        if (!corrections || corrections.length === 0) {
-            return corrected;
-        }
-
-        let highlightedText = corrected;
-
-        // Sort corrections by length of corrected_phrase descending to avoid partial matches
-        const sortedCorrections = [...corrections].sort((a, b) => b.corrected_phrase.length - a.corrected_phrase.length);
-
-        sortedCorrections.forEach(corr => {
-            const escapedCorrected = corr.corrected_phrase.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-            try {
-                const regex = new RegExp(`\\b${escapedCorrected}\\b`, 'g');
-                // Replace with modern ins/del representation
-                highlightedText = highlightedText.replace(regex, `<ins class="diff-highlight" title="Original: '${corr.original_phrase}' - Category: ${corr.category}">${corr.corrected_phrase}</ins>`);
-            } catch (e) {
-                // Fallback for non-word boundary matching (e.g. punctuation, symbols)
-                highlightedText = highlightedText.split(corr.corrected_phrase).join(`<ins class="diff-highlight" title="Original: '${corr.original_phrase}'">${corr.corrected_phrase}</ins>`);
+    function generatePolishedDiff(original, corrected) {
+        // Tokenize text into words, whitespace, and punctuation groups
+        const tokenize = (text) => text.split(/(\s+|[.,!?;:"'()\[\]{}]+)/).filter(Boolean);
+        
+        const tokens1 = tokenize(original);
+        const tokens2 = tokenize(corrected);
+        
+        const m = tokens1.length;
+        const n = tokens2.length;
+        
+        // DP table for Longest Common Subsequence
+        const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+        
+        for (let i = 1; i <= m; i++) {
+            for (let j = 1; j <= n; j++) {
+                if (tokens1[i - 1].toLowerCase().trim() === tokens2[j - 1].toLowerCase().trim()) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
             }
-        });
-
-        return highlightedText;
+        }
+        
+        // Backtrack to assemble the highlighted polished text
+        let i = m, j = n;
+        const diff = [];
+        
+        while (i > 0 || j > 0) {
+            if (i > 0 && j > 0 && tokens1[i - 1].toLowerCase().trim() === tokens2[j - 1].toLowerCase().trim()) {
+                // Token is unchanged; use the corrected token to preserve capitalization/punctuation
+                diff.push(escapeHtml(tokens2[j - 1]));
+                i--;
+                j--;
+            } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+                // Token was added or modified in the corrected version
+                const token = tokens2[j - 1];
+                if (token.trim() === '') {
+                    diff.push(token); // Don't highlight pure whitespace
+                } else {
+                    diff.push(`<ins class="diff-highlight">${escapeHtml(token)}</ins>`);
+                }
+                j--;
+            } else {
+                // Token was deleted from the original version
+                // We omit deletions from the polished text to keep it clean and ready to copy
+                i--;
+            }
+        }
+        
+        return diff.reverse().join('');
     }
 
     /* ==========================================================================
@@ -154,11 +181,11 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsContent.classList.remove('hidden');
 
         // Set Polished Output
-        const diffHtml = generatePolishedDiff(result.original_text, result.corrected_text, result.corrections);
+        const diffHtml = generatePolishedDiff(result.original_text, result.corrected_text);
         polishedOutput.innerHTML = diffHtml;
 
         // Set Metric Info Sidebar
-        metricCorrections.textContent = result.corrections.length;
+        if (metricCorrections) metricCorrections.textContent = result.corrections.length;
         correctionsCountBadge.textContent = result.corrections.length;
         
         // Simple heuristic for tone
@@ -167,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (lowercaseText.includes("hey") || lowercaseText.includes("cool") || lowercaseText.includes("stuff") || lowercaseText.includes("y'all")) {
             tone = 'Informal';
         }
-        metricTone.textContent = tone;
+        if (metricTone) metricTone.textContent = tone;
 
         // Generate Corrections List
         correctionsList.innerHTML = '';

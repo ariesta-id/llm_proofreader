@@ -76,9 +76,7 @@ body {
    Layout Structure
    ========================================================================== */
 .app-container {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 24px;
+    display: block;
     width: 100%;
     max-width: 1400px;
     height: calc(100vh - 48px);
