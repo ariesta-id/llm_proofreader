@@ -19,64 +19,11 @@ import json
 import requests
 from typing import Dict, Any, Optional
 from dotenv import load_dotenv
+from prompts import PROOFREAD_SCHEMA, get_proofread_prompt
 
 # Load environment variables from .env file
 load_dotenv()
 
-# JSON schema for the proofread structured output
-PROOFREAD_SCHEMA = {
-    "format": {
-        "type": "json_schema",
-        "name": "proofread_result",
-        "schema": {
-            "type": "object",
-            "properties": {
-                "original_text": {
-                    "type": "string",
-                    "description": "The exact original text that was provided for proofreading."
-                },
-                "corrected_text": {
-                    "type": "string",
-                    "description": "The fully proofread, polished, and corrected version of the text."
-                },
-                "corrections": {
-                    "type": "array",
-                    "description": "A list of specific corrections made to the original text.",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "original_phrase": {
-                                "type": "string",
-                                "description": "The exact phrase or word from the original text that was changed."
-                            },
-                            "corrected_phrase": {
-                                "type": "string",
-                                "description": "The replacement phrase or word used in the corrected text."
-                            },
-                            "category": {
-                                "type": "string",
-                                "enum": ["spelling", "grammar", "style", "punctuation", "other"],
-                                "description": "The classification of the error or improvement."
-                            },
-                            "explanation": {
-                                "type": "string",
-                                "description": "The reason why the change was made and how it improves the text."
-                            }
-                        },
-                        "required": ["original_phrase", "corrected_phrase", "category", "explanation"],
-                        "additionalProperties": False
-                    }
-                },
-                "overall_feedback": {
-                    "type": "string",
-                    "description": "General summary and feedback on the writing quality, tone, and readability."
-                }
-            },
-            "required": ["original_text", "corrected_text", "corrections", "overall_feedback"],
-            "additionalProperties": False
-        }
-    }
-}
 
 def proofread_text(
     text: str,
@@ -106,12 +53,7 @@ def proofread_text(
         )
 
     # 1. Build Payload
-    prompt = (
-        f"Please proofread the following text carefully. Correct any spelling mistakes, "
-        f"grammatical errors, awkward style, or punctuation issues. Explain every single change "
-        f"you make, and provide constructive overall feedback on the writing quality.\n\n"
-        f"Text to proofread:\n{text}"
-    )
+    prompt = get_proofread_prompt(text)
 
     payload = {
         "input": {

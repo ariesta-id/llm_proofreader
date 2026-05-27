@@ -707,6 +707,7 @@ textarea::placeholder {
     font-size: 15px;
     line-height: 1.7;
     color: var(--text-main);
+    white-space: pre-wrap;
 }
 
 /* ==========================================================================
