@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Proofreader | Premium GPT-5 Assistant</title>
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar / Brand panel -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo-glow"></div>
+                <div class="logo-container">
+                    <i data-lucide="sparkles" class="logo-icon"></i>
+                </div>
+                <h1>Proofreader<span>.ai</span></h1>
+                <p class="tagline">Powered by GPT-5 Structured API</p>
+            </div>
+            
+            <div class="info-card glass">
+                <h3>Writing Metrics</h3>
+                <div class="metric-item">
+                    <span class="metric-label">Tone</span>
+                    <span class="metric-value" id="metric-tone">Analyzing...</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Corrections</span>
+                    <span class="metric-value highlight" id="metric-corrections">0</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Characters</span>
+                    <span class="metric-value" id="metric-chars">0</span>
+                </div>
+            </div>
+
+            <footer class="sidebar-footer">
+                <p>&copy; 2026 Proofreader.ai</p>
+            </footer>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="workspace">
+            <!-- Input Area -->
+            <section class="panel input-panel glass">
+                <div class="panel-header">
+                    <h2><i data-lucide="file-text"></i> Original Text</h2>
+                    <span class="badge">Draft</span>
+                </div>
+                <div class="panel-body">
+                    <textarea id="text-input" placeholder="Type or paste your text here to proofread... (e.g. 'Their is many reasons to love programming. It allow you to build cool things...')"></textarea>
+                </div>
+                <div class="panel-footer">
+                    <div class="character-counter">
+                        <span id="char-count">0</span> / 2000 chars
+                    </div>
+                    <button id="proofread-btn" class="btn primary-btn">
+                        <span class="btn-text">Proofread Text</span>
+                        <i data-lucide="arrow-right" class="btn-icon"></i>
+                        <div class="btn-loader hidden"></div>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Results Area -->
+            <section class="panel results-panel glass empty" id="results-panel">
+                <!-- Empty State -->
+                <div class="empty-state" id="empty-state">
+                    <div class="pulse-container">
+                        <i data-lucide="sparkles" class="empty-icon"></i>
+                    </div>
+                    <h3>Waiting for Input</h3>
+                    <p>Enter your text on the left and click "Proofread Text" to get detailed AI analysis.</p>
+                </div>
+
+                <!-- Main Content (Hidden initially) -->
+                <div class="results-content hidden" id="results-content">
+                    <div class="panel-header tab-header">
+                        <div class="tabs">
+                            <button class="tab-btn active" data-tab="polished">
+                                <i data-lucide="check-circle-2"></i> Polished Text
+                            </button>
+                            <button class="tab-btn" data-tab="corrections">
+                                <i data-lucide="list-checks"></i> Corrections
+                                <span class="badge count-badge" id="corrections-count">0</span>
+                            </button>
+                            <button class="tab-btn" data-tab="feedback">
+                                <i data-lucide="message-square-text"></i> AI Feedback
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="panel-body tab-content-container">
+                        <!-- Polished Text Tab -->
+                        <div class="tab-content active" id="tab-polished">
+                            <div class="polished-text-container">
+                                <div id="polished-output" class="polished-output"></div>
+                            </div>
+                            <div class="action-bar">
+                                <button id="copy-btn" class="btn secondary-btn">
+                                    <i data-lucide="copy"></i> <span id="copy-btn-text">Copy to Clipboard</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Corrections Tab -->
+                        <div class="tab-content" id="tab-corrections">
+                            <div class="corrections-list" id="corrections-list">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Feedback Tab -->
+                        <div class="tab-content" id="tab-feedback">
+                            <div class="feedback-card">
+                                <div class="feedback-quote">
+                                    <i data-lucide="quote" class="quote-icon"></i>
+                                    <p id="feedback-text"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden">
+        <i data-lucide="check-circle" class="toast-icon"></i>
+        <span id="toast-message">Copied!</span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
