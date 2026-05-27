@@ -1,4 +1,4 @@
 .env
 *.pdf
 *.xlsx
-__pycache__/*
+__pycache__/
